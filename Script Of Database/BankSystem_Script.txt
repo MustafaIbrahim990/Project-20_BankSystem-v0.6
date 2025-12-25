@@ -1,0 +1,5829 @@
+USE [master]
+GO
+/****** Object:  Database [BankSystem_Database]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE DATABASE [BankSystem_Database]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'BankSystem_Database', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\BankSystem_Database.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'BankSystem_Database_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\BankSystem_Database_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [BankSystem_Database] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [BankSystem_Database].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [BankSystem_Database] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [BankSystem_Database] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [BankSystem_Database] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [BankSystem_Database] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [BankSystem_Database] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET RECOVERY FULL 
+GO
+ALTER DATABASE [BankSystem_Database] SET  MULTI_USER 
+GO
+ALTER DATABASE [BankSystem_Database] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [BankSystem_Database] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [BankSystem_Database] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [BankSystem_Database] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [BankSystem_Database] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [BankSystem_Database] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'BankSystem_Database', N'ON'
+GO
+ALTER DATABASE [BankSystem_Database] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [BankSystem_Database] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [BankSystem_Database]
+GO
+/****** Object:  Schema [Clients]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE SCHEMA [Clients]
+GO
+/****** Object:  Schema [ClientTransferRecords]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE SCHEMA [ClientTransferRecords]
+GO
+/****** Object:  Schema [Countries]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE SCHEMA [Countries]
+GO
+/****** Object:  Schema [Currencies]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE SCHEMA [Currencies]
+GO
+/****** Object:  Schema [People]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE SCHEMA [People]
+GO
+/****** Object:  Schema [UserLoginRecords]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE SCHEMA [UserLoginRecords]
+GO
+/****** Object:  Schema [Users]    Script Date: 12/26/2025 12:10:03 AM ******/
+CREATE SCHEMA [Users]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 12/26/2025 12:10:03 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[UserID] [int] IDENTITY(1,1) NOT NULL,
+	[PersonID] [int] NOT NULL,
+	[UserName] [nvarchar](50) NOT NULL,
+	[PasswordHashed] [nvarchar](64) NOT NULL,
+	[Salt] [nvarchar](64) NOT NULL,
+	[PermissionLevel] [int] NOT NULL,
+ CONSTRAINT [PK_Users_UserID] PRIMARY KEY CLUSTERED 
+(
+	[UserID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[UserLoginRecords]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserLoginRecords](
+	[LoginID] [int] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NOT NULL,
+	[DateTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_UserLoginRecords_LoginID] PRIMARY KEY CLUSTERED 
+(
+	[LoginID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[GetUserLoginRecordsByUserId_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetUserLoginRecordsByUserId_View]
+AS
+SELECT        ULR.LoginID, ULR.DateTime, U.UserName, U.UserID
+FROM            dbo.UserLoginRecords AS ULR INNER JOIN
+                         dbo.Users AS U ON ULR.UserID = U.UserID
+GO
+/****** Object:  Table [dbo].[People]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[People](
+	[PersonID] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [nvarchar](50) NOT NULL,
+	[LastName] [nvarchar](50) NOT NULL,
+	[CountryID] [int] NOT NULL,
+	[Phone] [nvarchar](20) NOT NULL,
+	[Email] [nvarchar](100) NOT NULL,
+ CONSTRAINT [PK_People_PersonID] PRIMARY KEY CLUSTERED 
+(
+	[PersonID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Clients]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Clients](
+	[ClientID] [int] IDENTITY(1,1) NOT NULL,
+	[PersonID] [int] NOT NULL,
+	[AccountNumber] [nvarchar](20) NOT NULL,
+	[AccountBalance] [decimal](18, 2) NOT NULL,
+	[PinCodeHashed] [nvarchar](64) NOT NULL,
+	[Salt] [nvarchar](64) NOT NULL,
+ CONSTRAINT [PK_Clients_ClientID] PRIMARY KEY CLUSTERED 
+(
+	[ClientID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ClientTransferRecords]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ClientTransferRecords](
+	[TransferID] [int] IDENTITY(1,1) NOT NULL,
+	[DateTime] [datetime] NOT NULL,
+	[FromClientID] [int] NOT NULL,
+	[ToClientID] [int] NOT NULL,
+	[TransferAmount] [decimal](18, 2) NOT NULL,
+	[FromBalanceAfterTransfer] [decimal](18, 2) NOT NULL,
+	[ToBalanceAfterTransfer] [decimal](18, 2) NOT NULL,
+	[ByUserID] [int] NOT NULL,
+ CONSTRAINT [PK_ClientTransferRecords_TransferID] PRIMARY KEY CLUSTERED 
+(
+	[TransferID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[GetClientTransferRecordsByClientId_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetClientTransferRecordsByClientId_View]
+AS
+SELECT        CTR.TransferID, CTR.FromClientID, CTR.ToClientID, CTR.DateTime, ISNULL(P1.FirstName, '') + ' ' + ISNULL(P1.LastName, '') AS FromClient, ISNULL(P2.FirstName, '') + ' ' + ISNULL(P2.LastName, '') AS ToClient, 
+                         CTR.TransferAmount, C1.AccountBalance AS FromBalanceAfterTransfer, C2.AccountBalance AS ToBalanceAfterTransfer, U.UserName AS ByUserName
+FROM            dbo.ClientTransferRecords AS CTR INNER JOIN
+                         dbo.Clients AS C1 ON CTR.FromClientID = C1.ClientID INNER JOIN
+                         dbo.Clients AS C2 ON CTR.ToClientID = C2.ClientID INNER JOIN
+                         dbo.People AS P1 ON C1.PersonID = P1.PersonID INNER JOIN
+                         dbo.People AS P2 ON C2.PersonID = P2.PersonID INNER JOIN
+                         dbo.Users AS U ON CTR.ByUserID = U.UserID
+GO
+/****** Object:  Table [dbo].[Currencies]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Currencies](
+	[CurrencyID] [int] IDENTITY(1,1) NOT NULL,
+	[CurrencyName] [nvarchar](100) NOT NULL,
+	[CurrencyCode] [nvarchar](10) NOT NULL,
+	[CurrencyRate] [decimal](18, 6) NOT NULL,
+ CONSTRAINT [PK_Currencies_CurrencyID] PRIMARY KEY CLUSTERED 
+(
+	[CurrencyID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[GetAllCurrencies_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetAllCurrencies_View]
+AS
+SELECT        CurrencyID, CurrencyName, CurrencyCode, CurrencyRate
+FROM            dbo.Currencies
+GO
+/****** Object:  Table [dbo].[Countries]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Countries](
+	[CountryID] [int] IDENTITY(1,1) NOT NULL,
+	[CountryName] [nvarchar](100) NOT NULL,
+	[CurrencyID] [int] NOT NULL,
+ CONSTRAINT [PK_Countries_CountryID] PRIMARY KEY CLUSTERED 
+(
+	[CountryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[GetAllCountries_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetAllCountries_View]
+AS
+SELECT DISTINCT TOP (100) PERCENT Co.CountryID, Co.CountryName, Cu.CurrencyName, Cu.CurrencyCode, Cu.CurrencyRate
+FROM            dbo.Countries AS Co INNER JOIN
+                         dbo.Currencies AS Cu ON Co.CurrencyID = Cu.CurrencyID
+GO
+/****** Object:  View [dbo].[GetAllUsers_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetAllUsers_View]
+AS
+SELECT        U.UserID, ISNULL(P.FirstName, '') AS FirstName, ISNULL(P.LastName, '') AS LastName, U.UserName, Co.CountryName, P.Phone, P.Email, U.PermissionLevel
+FROM            dbo.Users AS U INNER JOIN
+                         dbo.People AS P ON U.PersonID = P.PersonID INNER JOIN
+                         dbo.Countries AS Co ON P.CountryID = Co.CountryID
+GO
+/****** Object:  View [dbo].[GetAllClients_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetAllClients_View]
+AS
+SELECT        Cl.ClientID, ISNULL(Pe.FirstName, '') AS FirstName, ISNULL(Pe.LastName, '') AS LastName, Co.CountryName, Pe.Email, Pe.Phone, Cl.AccountNumber, Cl.AccountBalance
+FROM            dbo.Clients AS Cl INNER JOIN
+                         dbo.People AS Pe ON Cl.PersonID = Pe.PersonID INNER JOIN
+                         dbo.Countries AS Co ON Pe.CountryID = Co.CountryID
+GO
+/****** Object:  View [dbo].[GetAllClientTransferRecords_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetAllClientTransferRecords_View]
+AS
+SELECT        CTR.TransferID, CTR.DateTime, ISNULL(P1.FirstName, '') + ' ' + ISNULL(P1.LastName, '') AS FromClient, ISNULL(P2.FirstName, '') + ' ' + ISNULL(P2.LastName, '') AS ToClient, CTR.TransferAmount, 
+                         C1.AccountBalance AS FromBalanceAfterTransfer, C2.AccountBalance AS ToBalanceAfterTransfer, U.UserName AS ByUserName
+FROM            dbo.ClientTransferRecords AS CTR INNER JOIN
+                         dbo.Clients AS C1 ON CTR.FromClientID = C1.ClientID INNER JOIN
+                         dbo.Clients AS C2 ON CTR.ToClientID = C2.ClientID INNER JOIN
+                         dbo.People AS P1 ON C1.PersonID = P1.PersonID INNER JOIN
+                         dbo.People AS P2 ON C2.PersonID = P2.PersonID INNER JOIN
+                         dbo.Users AS U ON CTR.ByUserID = U.UserID
+GO
+/****** Object:  View [dbo].[GetAllUserLoginRecords_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetAllUserLoginRecords_View]
+AS
+SELECT        ULR.LoginID, ULR.DateTime, ISNULL(P.FirstName, '') AS FirstName, ISNULL(P.LastName, '') AS LastName, U.UserName, Co.CountryName, P.Email, P.Phone, U.PermissionLevel
+FROM            dbo.UserLoginRecords AS ULR INNER JOIN
+                         dbo.Users AS U ON ULR.UserID = U.UserID INNER JOIN
+                         dbo.People AS P ON U.PersonID = P.PersonID INNER JOIN
+                         dbo.Countries AS Co ON P.CountryID = Co.CountryID
+GO
+/****** Object:  View [dbo].[GetAllPeople_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetAllPeople_View]
+AS
+SELECT        P.PersonID, ISNULL(P.FirstName, '') AS FirstName, ISNULL(P.LastName, '') AS LastName, Co.CountryName, Cu.CurrencyName, Cu.CurrencyCode, Cu.CurrencyRate, P.Phone, P.Email
+FROM            dbo.People AS P INNER JOIN
+                         dbo.Countries AS Co ON P.CountryID = Co.CountryID INNER JOIN
+                         dbo.Currencies AS Cu ON Co.CurrencyID = Cu.CurrencyID
+GO
+/****** Object:  View [dbo].[GetCountriesByCurrencyId_View]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[GetCountriesByCurrencyId_View]
+AS
+SELECT        Co.CountryID, Co.CountryName, Cu.CurrencyName, Cu.CurrencyCode, Cu.CurrencyRate
+FROM            dbo.Countries AS Co INNER JOIN
+                         dbo.Currencies AS Cu ON Co.CurrencyID = Cu.CurrencyID
+GO
+SET IDENTITY_INSERT [dbo].[Clients] ON 
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (1, 1, N'A150', CAST(3600.00 AS Decimal(18, 2)), N'0yguyZvSq4YQRHaaZeurbF65gx22KH0VmQ+YnkTbJsw=', N'oKwEe40nD2X8T4pdM47Gkj2aMUC6LRP2riU3yL7aiwI=')
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (3, 3, N'A151', CAST(2000.00 AS Decimal(18, 2)), N'`1234', N'1234')
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (4, 1, N'A152', CAST(5000.00 AS Decimal(18, 2)), N'0yguyZvSq4YQRHaaZeurbF65gx22KH0VmQ+YnkTbJsw=', N'oKwEe40nD2X8T4pdM47Gkj2aMUC6LRP2riU3yL7aiwI=')
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (5, 1, N'string', CAST(1000.00 AS Decimal(18, 2)), N'string', N'string')
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (11, 6, N'A153', CAST(3500.50 AS Decimal(18, 2)), N'1234', N'1234')
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (12, 3, N'A154', CAST(0.00 AS Decimal(18, 2)), N'w4c2o/CyHKuyvMjjKngzSSzGaUvTp5611mqu5GpPrpU=', N'GayXjlVNa/GIbxKTqOJIP8tsObo27EN1Cv15f2OG+w0=')
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (13, 1, N'A155', CAST(0.00 AS Decimal(18, 2)), N'g5fWxUH5JqE+uEfZ2bjD+bbbHpFUrjpp3vdZY5X8dNw=', N'iLMkFTFzBo60u12BL9z+zKGMxvocr3VngdtgEdDdWms=')
+GO
+INSERT [dbo].[Clients] ([ClientID], [PersonID], [AccountNumber], [AccountBalance], [PinCodeHashed], [Salt]) VALUES (17, 1, N'A156', CAST(1900.00 AS Decimal(18, 2)), N'1234', N'1234')
+GO
+SET IDENTITY_INSERT [dbo].[Clients] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ClientTransferRecords] ON 
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (3, CAST(N'2025-10-16T00:39:12.117' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(1000.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (5, CAST(N'2024-10-16T00:39:12.117' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(5000.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (6, CAST(N'2025-10-22T00:28:46.633' AS DateTime), 3, 1, CAST(2000.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), CAST(3500.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (7, CAST(N'2025-10-22T00:30:25.443' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(2500.00 AS Decimal(18, 2)), CAST(1000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (8, CAST(N'2025-10-22T00:37:11.740' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(1500.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (9, CAST(N'2025-11-02T17:16:17.780' AS DateTime), 1, 3, CAST(3000.00 AS Decimal(18, 2)), CAST(500.00 AS Decimal(18, 2)), CAST(5000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (10, CAST(N'2025-11-02T17:17:41.397' AS DateTime), 1, 3, CAST(500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), CAST(5500.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (11, CAST(N'2025-11-02T17:21:55.343' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(4500.00 AS Decimal(18, 2)), CAST(1000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (12, CAST(N'2025-11-02T17:27:23.803' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(3500.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (13, CAST(N'2025-11-02T17:32:27.840' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(2500.00 AS Decimal(18, 2)), CAST(3000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (14, CAST(N'2025-11-02T17:38:37.447' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), CAST(3500.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (15, CAST(N'2025-11-02T17:40:17.313' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(1000.00 AS Decimal(18, 2)), CAST(4500.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (16, CAST(N'2025-11-02T17:41:05.087' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), CAST(5500.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (17, CAST(N'2025-11-02T17:41:41.533' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(4500.00 AS Decimal(18, 2)), CAST(1000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (18, CAST(N'2025-11-02T17:46:50.313' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(3500.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (19, CAST(N'2025-11-02T18:10:02.550' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(2500.00 AS Decimal(18, 2)), CAST(3000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (20, CAST(N'2025-11-02T18:11:02.383' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(1500.00 AS Decimal(18, 2)), CAST(4000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (21, CAST(N'2025-11-02T18:11:43.633' AS DateTime), 3, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(500.00 AS Decimal(18, 2)), CAST(5000.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (22, CAST(N'2025-11-02T18:13:02.457' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(4000.00 AS Decimal(18, 2)), CAST(1500.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (23, CAST(N'2025-11-03T17:58:37.040' AS DateTime), 1, 3, CAST(1000.00 AS Decimal(18, 2)), CAST(3000.00 AS Decimal(18, 2)), CAST(2500.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (24, CAST(N'2025-12-20T23:50:12.877' AS DateTime), 1, 3, CAST(100.00 AS Decimal(18, 2)), CAST(3000.00 AS Decimal(18, 2)), CAST(2600.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (25, CAST(N'2025-12-20T23:51:55.607' AS DateTime), 3, 1, CAST(600.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), CAST(3600.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (26, CAST(N'2025-12-20T23:57:34.510' AS DateTime), 1, 3, CAST(600.00 AS Decimal(18, 2)), CAST(3000.00 AS Decimal(18, 2)), CAST(2600.00 AS Decimal(18, 2)), 1)
+GO
+INSERT [dbo].[ClientTransferRecords] ([TransferID], [DateTime], [FromClientID], [ToClientID], [TransferAmount], [FromBalanceAfterTransfer], [ToBalanceAfterTransfer], [ByUserID]) VALUES (27, CAST(N'2025-12-24T03:51:11.977' AS DateTime), 3, 1, CAST(600.00 AS Decimal(18, 2)), CAST(2000.00 AS Decimal(18, 2)), CAST(3600.00 AS Decimal(18, 2)), 2)
+GO
+SET IDENTITY_INSERT [dbo].[ClientTransferRecords] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Countries] ON 
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (1, N'Afghanistan', 80)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (2, N'Albania', 71)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (3, N'Algeria', 30)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (4, N'Andorra', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (5, N'Angola', 136)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (6, N'Antigua and Barbuda', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (7, N'Argentina', 39)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (8, N'Armenia', 123)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (9, N'Austria', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (10, N'Azerbaijan', 123)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (11, N'Bahrain', 27)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (12, N'Bangladesh', 54)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (13, N'Barbados', 107)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (14, N'Belarus', 73)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (15, N'Belgium', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (16, N'Belize', 106)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (17, N'Benin', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (18, N'Bhutan', 86)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (19, N'Bolivia', 44)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (20, N'Bosnia and Herzegovina', 121)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (21, N'Botswana', 141)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (22, N'Brazil', 13)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (23, N'Brunei', 17)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (24, N'Bulgaria', 68)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (25, N'Burkina Faso', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (26, N'Burundi', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (27, N'Cabo Verde', 95)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (28, N'Cambodia', 56)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (29, N'Cameroon', 97)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (30, N'Canada', 9)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (31, N'Central African Republic', 97)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (32, N'Chad', 97)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (33, N'Channel Islands', 153)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (34, N'Chile', 41)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (35, N'China', 5)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (36, N'Colombia', 40)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (37, N'Comoros', 98)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (38, N'Congo', 97)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (39, N'Costa Rica', 47)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (40, N'Côte d''Ivoire', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (41, N'Croatia', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (42, N'Cuba', 109)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (43, N'Cyprus', 149)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (44, N'Czech Republic', 66)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (45, N'Denmark', 21)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (46, N'Djibouti', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (47, N'Dominica', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (48, N'Dominican Republic', 49)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (49, N'DR Congo', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (50, N'Ecuador', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (51, N'Egypt', 29)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (52, N'El Salvador', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (53, N'Equatorial Guinea', 97)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (54, N'Eritrea', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (55, N'Estonia', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (56, N'Eswatini', 14)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (57, N'Ethiopia', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (58, N'Faeroe Islands', 21)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (59, N'Finland', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (60, N'France', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (61, N'French Guiana', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (62, N'Gabon', 97)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (63, N'Gambia', 142)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (64, N'Georgia', 123)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (65, N'Germany', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (66, N'Ghana', 38)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (67, N'Gibraltar', 153)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (68, N'Greece', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (69, N'Grenada', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (70, N'Guatemala', 50)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (71, N'Guinea', 131)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (72, N'Guinea-Bissau', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (73, N'Guyana', 114)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (74, N'Haiti', 111)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (75, N'Holy See', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (76, N'Honduras', 51)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (77, N'Hong Kong', 5)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (78, N'Hungary', 65)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (79, N'Iceland', 20)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (80, N'India', 8)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (81, N'Indonesia', 88)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (82, N'Iran', 126)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (83, N'Iraq', 6)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (84, N'Ireland', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (85, N'Isle of Man', 153)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (86, N'Israel', 62)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (87, N'Italy', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (88, N'Jamaica', 108)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (89, N'Japan', 154)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (90, N'Jordan', 28)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (91, N'Kazakhstan', 75)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (92, N'Kenya', 34)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (93, N'Kuwait', 25)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (94, N'Kyrgyzstan', 78)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (95, N'Laos', 57)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (96, N'Latvia', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (97, N'Lebanon', 63)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (98, N'Lesotho', 137)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (99, N'Liberia', 112)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (100, N'Libya', 92)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (101, N'Liechtenstein', 10)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (102, N'Lithuania', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (103, N'Luxembourg', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (104, N'Macao', 5)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (105, N'Madagascar', 133)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (106, N'Malawi', 143)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (107, N'Malaysia', 87)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (108, N'Maldives', 86)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (109, N'Mali', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (110, N'Mauritania', 140)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (111, N'Mauritius', 138)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (112, N'Mayotte', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (113, N'Mexico', 15)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (114, N'Moldova', 67)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (115, N'Monaco', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (116, N'Mongolia', 79)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (117, N'Montenegro', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (118, N'Morocco', 32)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (119, N'Mozambique', 132)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (120, N'Myanmar', 55)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (121, N'Namibia', 137)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (122, N'Nepal', 52)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (123, N'Netherlands', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (124, N'Nicaragua', 47)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (125, N'Niger', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (126, N'Nigeria', 33)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (127, N'North Korea', 60)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (128, N'North Macedonia', 72)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (129, N'Norway', 20)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (130, N'Oman', 26)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (131, N'Pakistan', 53)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (132, N'Panama', 48)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (133, N'Paraguay', 45)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (134, N'Peru', 42)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (135, N'Philippines', 59)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (136, N'Poland', 22)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (137, N'Portugal', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (138, N'Qatar', 24)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (139, N'Réunion', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (140, N'Romania', 67)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (141, N'Russia', 12)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (142, N'Rwanda', 37)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (143, N'Saint Helena', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (144, N'Saint Kitts and Nevis', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (145, N'Saint Lucia', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (146, N'Saint Vincent and the Grenadines', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (147, N'San Marino', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (148, N'Sao Tome & Principe', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (149, N'Saudi Arabia', 7)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (150, N'Senegal', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (151, N'Serbia', 70)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (153, N'Sierra Leone', 130)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (154, N'Singapore', 17)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (155, N'Slovakia', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (156, N'Slovenia', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (157, N'Somalia', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (158, N'South Africa', 14)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (159, N'South Korea', 60)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (160, N'South Sudan', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (161, N'Spain', 152)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (162, N'Sri Lanka', 8)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (163, N'State of Palestine', 120)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (164, N'Sudan', 129)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (165, N'Suriname', 115)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (166, N'Sweden', 19)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (168, N'Syria', 155)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (169, N'Taiwan', 61)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (170, N'Tajikistan', 77)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (171, N'Tanzania', 36)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (172, N'Thailand', 85)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (173, N'The Bahamas', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (174, N'Timor-Leste', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (175, N'Togo', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (176, N'Trinidad and Tobago', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (177, N'Tunisia', 31)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (178, N'Turkey', 16)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (179, N'Turkmenistan', 76)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (180, N'Uganda', 35)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (181, N'Ukraine', 74)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (182, N'United Arab Emirates', 23)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (183, N'United Kingdom', 153)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (184, N'United States', 151)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (185, N'Uruguay', 46)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (186, N'Uzbekistan', 76)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (187, N'Venezuela', 43)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (188, N'Vietnam', 58)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (189, N'Western Sahara', 96)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (190, N'Yemen', 63)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (191, N'Zambia', 134)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (192, N'Zimbabwe', 112)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (193, N'Libya (duplicate note)', 92)
+GO
+INSERT [dbo].[Countries] ([CountryID], [CountryName], [CurrencyID]) VALUES (196, N'string', 10)
+GO
+SET IDENTITY_INSERT [dbo].[Countries] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Currencies] ON 
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (5, N'Chinese Yuan', N'CNY', CAST(7.200000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (6, N'Iraqi Dinar', N'IQD', CAST(1310.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (7, N'Saudi Riyal', N'SAR', CAST(3.750000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (8, N'Indian Rupee', N'INR', CAST(83.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (9, N'Canadian Dollar', N'CAD', CAST(1.350000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (10, N'Swiss Franc', N'CHF', CAST(0.915000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (11, N'Australian Dollar', N'AUD', CAST(1.520000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (12, N'Russian Ruble', N'RUB', CAST(98.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (13, N'Brazilian Real', N'BRL', CAST(5.450000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (14, N'South African Rand', N'ZAR', CAST(19.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (15, N'Mexican Peso', N'MXN', CAST(17.800000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (16, N'Turkish Lira', N'TRY', CAST(33.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (17, N'Singapore Dollar', N'SGD', CAST(1.360000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (18, N'New Zealand Dollar', N'NZD', CAST(1.600000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (19, N'Swedish Krona', N'SEK', CAST(10.200000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (20, N'Norwegian Krone', N'NOK', CAST(10.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (21, N'Danish Krone', N'DKK', CAST(6.900000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (22, N'Polish Zloty', N'PLN', CAST(4.100000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (23, N'UAE Dirham', N'AED', CAST(3.670000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (24, N'Qatari Riyal', N'QAR', CAST(3.640000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (25, N'Kuwaiti Dinar', N'KWD', CAST(0.305000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (26, N'Omani Rial', N'OMR', CAST(0.385000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (27, N'Bahraini Dinar', N'BHD', CAST(0.375000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (28, N'Jordanian Dinar', N'JOD', CAST(0.709000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (29, N'Egyptian Pound', N'EGP', CAST(30.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (30, N'Algerian Dinar', N'DZD', CAST(149.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (31, N'Tunisian Dinar', N'TND', CAST(3.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (32, N'Moroccan Dirham', N'MAD', CAST(9.900000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (33, N'Nigerian Naira', N'NGN', CAST(765.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (34, N'Kenyan Shilling', N'KES', CAST(155.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (35, N'Ugandan Shilling', N'UGX', CAST(3750.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (36, N'Tanzanian Shilling', N'TZS', CAST(2350.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (37, N'Rwandan Franc', N'RWF', CAST(1150.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (38, N'Ghanaian Cedi', N'GHS', CAST(14.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (39, N'Argentine Peso', N'ARS', CAST(350.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (40, N'Colombian Peso', N'COP', CAST(4200.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (41, N'Chilean Peso', N'CLP', CAST(870.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (42, N'Peruvian Sol', N'PEN', CAST(3.700000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (43, N'Venezuela Bolívar (VES)', N'VES', CAST(3000.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (44, N'Bolivian Boliviano', N'BOB', CAST(6.900000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (45, N'Paraguayan Guarani', N'PYG', CAST(7370.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (46, N'Uruguayan Peso', N'UYU', CAST(41.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (47, N'Costa Rican Colón', N'CRC', CAST(545.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (48, N'Panamanian Balboa', N'PAB', CAST(1.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (49, N'Dominican Peso', N'DOP', CAST(56.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (50, N'Guatemalan Quetzal', N'GTQ', CAST(7.700000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (51, N'Honduran Lempira', N'HNL', CAST(24.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (52, N'Nepalese Rupee', N'NPR', CAST(133.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (53, N'Pakistani Rupee', N'PKR', CAST(286.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (54, N'Bangladeshi Taka', N'BDT', CAST(110.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (55, N'Myanmar Kyat', N'MMK', CAST(2750.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (56, N'Cambodian Riel', N'KHR', CAST(4100.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (57, N'Laotian Kip', N'LAK', CAST(17400.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (58, N'Vietnamese Dong', N'VND', CAST(24600.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (59, N'Philippine Peso', N'PHP', CAST(58.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (60, N'South Korean Won', N'KRW', CAST(1390.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (61, N'Taiwan Dollar', N'TWD', CAST(30.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (62, N'Israeli Shekel', N'ILS', CAST(3.600000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (63, N'Lebanese Pound (LBP)', N'LBP', CAST(15000.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (65, N'Hungarian Forint', N'HUF', CAST(345.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (66, N'Czech Koruna', N'CZK', CAST(22.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (67, N'Romanian Leu', N'RON', CAST(4.600000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (68, N'Bulgarian Lev', N'BGN', CAST(1.800000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (69, N'Croatian Kuna (HRK replaced by
+EUR)', N'HRK', CAST(0.135000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (70, N'Serbian Dinar', N'RSD', CAST(105.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (71, N'Albanian Lek', N'ALL', CAST(106.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (72, N'Macedonian Denar', N'MKD', CAST(56.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (73, N'Belarusian Ruble', N'BYN', CAST(2.560000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (74, N'Ukrainian Hryvnia', N'UAH', CAST(37.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (75, N'Kazakhstani Tenge', N'KZT', CAST(470.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (76, N'Uzbekistan Som', N'UZS', CAST(11250.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (77, N'Tajikistani Somoni', N'TJS', CAST(10.600000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (78, N'Kyrgyzstani Som', N'KGS', CAST(84.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (79, N'Mongolian Tugrik', N'MNT', CAST(3490.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (80, N'Afghan Afghani', N'AFN', CAST(86.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (81, N'Nepalese Rupee (duplicate
+handled earlier)', N'NPR2', CAST(133.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (82, N'Burmese Kyat (duplicate MMK
+earlier)', N'MMK2', CAST(2750.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (83, N'Malta/Small EUR users (use
+EUR)', N'XEU', CAST(0.920000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (84, N'Morocco (MAD duplicate)', N'MAD2', CAST(9.900000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (85, N'Thai Baht', N'THB', CAST(36.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (86, N'Bhutan Ngultrum (pegged to
+INR)', N'BTN', CAST(83.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (87, N'Malaysian Ringgit', N'MYR', CAST(4.700000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (88, N'Indonesian Rupiah', N'IDR', CAST(15650.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (89, N'Philippine Peso (duplicate)', N'PHP2', CAST(58.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (90, N'Bangladeshi Taka (duplicate)', N'BDT2', CAST(110.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (91, N'Bermudian Dollar (pegged to
+USD)', N'BMD', CAST(1.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (92, N'Libyan Dinar', N'LYD', CAST(4.800000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (93, N'Tunisia (duplicate TND)', N'TND2', CAST(3.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (94, N'Libanon (duplicate LBP)', N'LBP2', CAST(15000.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (95, N'Cape Verde Escudo', N'CVE', CAST(105.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (96, N'West African CFA Franc', N'XOF', CAST(620.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (97, N'Central African CFA Franc', N'XAF', CAST(620.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (98, N'Comorian Franc', N'KMF', CAST(445.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (99, N'Samoan Tala', N'WST', CAST(2.700000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (100, N'Fijian Dollar', N'FJD', CAST(2.200000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (101, N'Tongan Paʻanga', N'TOP', CAST(2.300000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (102, N'Papua New Guinean Kina', N'PGK', CAST(3.400000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (103, N'Solomon Islands Dollar', N'SBD', CAST(8.400000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (104, N'Vanuatu Vatu', N'VUV', CAST(128.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (105, N'Falkland Islands Pound
+(pegged to GBP)', N'FKP', CAST(0.790000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (106, N'Belize Dollar', N'BZD', CAST(2.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (107, N'Barbadian Dollar', N'BBD', CAST(2.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (108, N'Jamaican Dollar', N'JMD', CAST(154.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (109, N'Cuban Peso', N'CUP', CAST(24.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (110, N'Cuban Convertible Peso', N'CUC', CAST(1.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (111, N'Haitian Gourde', N'HTG', CAST(150.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (112, N'Zimbabwean Dollar', N'ZWL', CAST(900.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (113, N'East Caribbean Dollar', N'XCD', CAST(2.700000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (114, N'Guyana Dollar', N'GYD', CAST(209.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (115, N'Suriname Dollar', N'SRD', CAST(34.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (116, N'Belarus (duplicate BYN
+handled)', N'BYN2', CAST(2.560000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (117, N'Malta etc (use EUR duplicate)', N'EUR2', CAST(0.920000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (118, N'Cook Islands Dollar (pegged to
+NZD)', N'CKD', CAST(1.600000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (119, N'Northern Mariana Islands (uses
+USD)', N'USD2', CAST(1.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (120, N'Palestinian territories (use ILS
+or local)', N'ILS2', CAST(3.600000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (121, N'Bosnia and Herzegovina
+Convertible Mark', N'BAM', CAST(1.650000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (122, N'Algeria (duplicate DZD)', N'DZD2', CAST(149.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (123, N'Azerbaijani Manat', N'AZN', CAST(1.700000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (124, N'Belarus (another duplicate)', N'BYN3', CAST(2.560000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (125, N'Egypt (duplicate EGP)', N'EGP2', CAST(30.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (126, N'Iranian Rial (official toman
+issues) - approximate', N'IRR', CAST(42000.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (127, N'Afghanistan (duplicate AFN
+earlier)', N'AFN2', CAST(86.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (128, N'Cambodia (duplicate KHR)', N'KHR2', CAST(4100.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (129, N'Burundi Franc', N'BIF', CAST(2875.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (130, N'Sierra Leone Leone', N'SLL', CAST(14500.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (131, N'Guinea Franc', N'GNF', CAST(8600.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (132, N'Mozambican Metical', N'MZN', CAST(63.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (133, N'Malagasy Ariary', N'MGA', CAST(4150.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (134, N'Zambian Kwacha', N'ZMW', CAST(22.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (135, N'Zimbabwe (duplicate ZWL)', N'ZWL2', CAST(900.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (136, N'Angolan Kwanza', N'AOA', CAST(830.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (137, N'Namibian Dollar (pegged to
+ZAR)', N'NAD', CAST(19.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (138, N'Mauritian Rupee', N'MUR', CAST(45.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (139, N'Seychellois Rupee', N'SCR', CAST(14.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (140, N'Mauritanian Ouguiya', N'MRU', CAST(36.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (141, N'Botswana Pula', N'BWP', CAST(14.500000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (142, N'Gambia (GMD)', N'GMD', CAST(63.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (143, N'Malawi Kwacha', N'MWK', CAST(1100.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (144, N'Burundi (duplicate BIF)', N'BIF2', CAST(2875.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (145, N'Chilean (duplicate CLP)', N'CLP2', CAST(870.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (146, N'Kazakhstan (duplicate KZT)', N'KZT2', CAST(470.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (147, N'Lithuania/Latvia (use EUR)', N'EUR3', CAST(0.920000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (148, N'Lithuania (duplicate)', N'LTL', CAST(0.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (149, N'Cyprus (EUR)', N'EUR4', CAST(0.920000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (150, N'Malta duplicate', N'EUR5', CAST(0.920000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (151, N'United States Dollar', N'USD', CAST(1.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (152, N'Euro', N'EUR', CAST(0.920000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (153, N'British Pound Sterling', N'GBP', CAST(0.790000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (154, N'Japanese Yen', N'JPY', CAST(148.000000 AS Decimal(18, 6)))
+GO
+INSERT [dbo].[Currencies] ([CurrencyID], [CurrencyName], [CurrencyCode], [CurrencyRate]) VALUES (155, N'Syrian Pound', N'SYP', CAST(13001.900000 AS Decimal(18, 6)))
+GO
+SET IDENTITY_INSERT [dbo].[Currencies] OFF
+GO
+SET IDENTITY_INSERT [dbo].[People] ON 
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (1, N'Mustafa', N'A. Ibrahim', 168, N'07826251532', N'Mustafa@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (3, N'Ahmed', N'Ali', 168, N'07517352912', N'Ahmed@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (6, N'Jan', N'Ahmed', 1, N'07517352821', N'JanAh@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (7, N'Sarah', N'Ahmed Ali', 1, N'07502517361', N'SarahAhmedAli@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (13, N'string', N'string', 1, N'07826251512', N'Mustafa1@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (15, N'string', N'string', 1, N'string1222', N'string@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (18, N'string', N'string', 1, N'string1111', N'string1@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (25, N'string', N'string', 1, N'07822251532', N'M1ustafa@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (27, N'string', N'string', 1, N'07352173822', N'string32@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (28, N'string', N'string', 1, N'1223623712', N'string21@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (29, N'123', N'string', 1, N'12732638129', N'strin121g@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (30, N'string1', N'string', 1, N'13281238128', N'str1ing21@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (31, N'string', N'string', 1, N'1234567890', N'string11@gmail.com')
+GO
+INSERT [dbo].[People] ([PersonID], [FirstName], [LastName], [CountryID], [Phone], [Email]) VALUES (32, N'string', N'string', 1, N'1234567895', N'string5@gmail.com')
+GO
+SET IDENTITY_INSERT [dbo].[People] OFF
+GO
+SET IDENTITY_INSERT [dbo].[UserLoginRecords] ON 
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (1, 1, CAST(N'2025-10-16T00:39:12.117' AS DateTime))
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (2, 1, CAST(N'2025-10-16T00:39:12.117' AS DateTime))
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (3, 1, CAST(N'2025-10-15T00:39:12.117' AS DateTime))
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (4, 1, CAST(N'2025-10-14T00:39:12.117' AS DateTime))
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (5, 1, CAST(N'2025-10-13T00:39:12.117' AS DateTime))
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (6, 1, CAST(N'2025-10-12T00:39:12.117' AS DateTime))
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (7, 1, CAST(N'2025-10-11T00:39:12.117' AS DateTime))
+GO
+INSERT [dbo].[UserLoginRecords] ([LoginID], [UserID], [DateTime]) VALUES (8, 1, CAST(N'2025-10-10T00:39:12.117' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[UserLoginRecords] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
+GO
+INSERT [dbo].[Users] ([UserID], [PersonID], [UserName], [PasswordHashed], [Salt], [PermissionLevel]) VALUES (1, 1, N'Admin', N'h2rhSa2QBkWOcqXbowQtv3uj/Z4P5N2AFdfqQpNqJ+Q=', N'gqFNdp1FzsQiFUnfHkq18vhf3hp/Jo0JnSOv2LP6QHg=', -1)
+GO
+INSERT [dbo].[Users] ([UserID], [PersonID], [UserName], [PasswordHashed], [Salt], [PermissionLevel]) VALUES (2, 3, N'User1', N'h2rhSa2QBkWOcqXbowQtv3uj/Z4P5N2AFdfqQpNqJ+Q=', N'gqFNdp1FzsQiFUnfHkq18vhf3hp/Jo0JnSOv2LP6QHg=', 1)
+GO
+INSERT [dbo].[Users] ([UserID], [PersonID], [UserName], [PasswordHashed], [Salt], [PermissionLevel]) VALUES (4, 1, N'User3', N'UQpY9Xl+B+oI1LrQ6e4vp05/DE1JIHbaK0LwUvu31Bk=', N'MaWbqZ03wwrKatyH+AN/ylG3uzsy4lpL4OSs8+UZf18=', 0)
+GO
+SET IDENTITY_INSERT [dbo].[Users] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Clients_AccountNumber]    Script Date: 12/26/2025 12:10:04 AM ******/
+ALTER TABLE [dbo].[Clients] ADD  CONSTRAINT [UQ_Clients_AccountNumber] UNIQUE NONCLUSTERED 
+(
+	[AccountNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Countries_CountryName]    Script Date: 12/26/2025 12:10:04 AM ******/
+ALTER TABLE [dbo].[Countries] ADD  CONSTRAINT [UQ_Countries_CountryName] UNIQUE NONCLUSTERED 
+(
+	[CountryName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Currencies_CurrencyCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+ALTER TABLE [dbo].[Currencies] ADD  CONSTRAINT [UQ_Currencies_CurrencyCode] UNIQUE NONCLUSTERED 
+(
+	[CurrencyCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_People_Email]    Script Date: 12/26/2025 12:10:04 AM ******/
+ALTER TABLE [dbo].[People] ADD  CONSTRAINT [UQ_People_Email] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_People_Phone]    Script Date: 12/26/2025 12:10:04 AM ******/
+ALTER TABLE [dbo].[People] ADD  CONSTRAINT [UQ_People_Phone] UNIQUE NONCLUSTERED 
+(
+	[Phone] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Users_UserName]    Script Date: 12/26/2025 12:10:04 AM ******/
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [UQ_Users_UserName] UNIQUE NONCLUSTERED 
+(
+	[UserName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[ClientTransferRecords] ADD  DEFAULT (getdate()) FOR [DateTime]
+GO
+ALTER TABLE [dbo].[UserLoginRecords] ADD  DEFAULT (getdate()) FOR [DateTime]
+GO
+ALTER TABLE [dbo].[Clients]  WITH CHECK ADD  CONSTRAINT [FK_Clients_PersonID] FOREIGN KEY([PersonID])
+REFERENCES [dbo].[People] ([PersonID])
+GO
+ALTER TABLE [dbo].[Clients] CHECK CONSTRAINT [FK_Clients_PersonID]
+GO
+ALTER TABLE [dbo].[ClientTransferRecords]  WITH CHECK ADD  CONSTRAINT [FK_ClientTransferRecords_ByUserID] FOREIGN KEY([ByUserID])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+ALTER TABLE [dbo].[ClientTransferRecords] CHECK CONSTRAINT [FK_ClientTransferRecords_ByUserID]
+GO
+ALTER TABLE [dbo].[ClientTransferRecords]  WITH CHECK ADD  CONSTRAINT [FK_ClientTransferRecords_FromClientID] FOREIGN KEY([FromClientID])
+REFERENCES [dbo].[Clients] ([ClientID])
+GO
+ALTER TABLE [dbo].[ClientTransferRecords] CHECK CONSTRAINT [FK_ClientTransferRecords_FromClientID]
+GO
+ALTER TABLE [dbo].[ClientTransferRecords]  WITH CHECK ADD  CONSTRAINT [FK_ClientTransferRecords_ToClientID] FOREIGN KEY([ToClientID])
+REFERENCES [dbo].[Clients] ([ClientID])
+GO
+ALTER TABLE [dbo].[ClientTransferRecords] CHECK CONSTRAINT [FK_ClientTransferRecords_ToClientID]
+GO
+ALTER TABLE [dbo].[Countries]  WITH CHECK ADD  CONSTRAINT [FK_Countries_CurrencyID] FOREIGN KEY([CurrencyID])
+REFERENCES [dbo].[Currencies] ([CurrencyID])
+GO
+ALTER TABLE [dbo].[Countries] CHECK CONSTRAINT [FK_Countries_CurrencyID]
+GO
+ALTER TABLE [dbo].[People]  WITH CHECK ADD  CONSTRAINT [FK_People_CountryID] FOREIGN KEY([CountryID])
+REFERENCES [dbo].[Countries] ([CountryID])
+GO
+ALTER TABLE [dbo].[People] CHECK CONSTRAINT [FK_People_CountryID]
+GO
+ALTER TABLE [dbo].[UserLoginRecords]  WITH CHECK ADD  CONSTRAINT [FK_UserLoginRecords_UserID] FOREIGN KEY([UserID])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+ALTER TABLE [dbo].[UserLoginRecords] CHECK CONSTRAINT [FK_UserLoginRecords_UserID]
+GO
+ALTER TABLE [dbo].[Users]  WITH CHECK ADD  CONSTRAINT [FK_Users_PersonID] FOREIGN KEY([PersonID])
+REFERENCES [dbo].[People] ([PersonID])
+GO
+ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_PersonID]
+GO
+ALTER TABLE [dbo].[People]  WITH CHECK ADD  CONSTRAINT [CH_People_Email] CHECK  (([Email] like '%_@_%._%'))
+GO
+ALTER TABLE [dbo].[People] CHECK CONSTRAINT [CH_People_Email]
+GO
+ALTER TABLE [dbo].[People]  WITH CHECK ADD  CONSTRAINT [CH_People_Phone] CHECK  ((len([Phone])>=(10)))
+GO
+ALTER TABLE [dbo].[People] CHECK CONSTRAINT [CH_People_Phone]
+GO
+/****** Object:  StoredProcedure [Clients].[AddNew]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[AddNew]
+	@PersonID Int,
+	@AccountNumber nvarchar(20),
+	@AccountBalance decimal(18,2),
+	@PinCodeHashed nvarchar(64),
+	@Salt nvarchar(64),
+	@NewClientID int Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002, 'Person not found.', 2;
+
+			if Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber)
+				Throw 50003, 'Account Number is already exists.', 3;
+
+			INSERT INTO dbo.Clients
+				(PersonID, AccountNumber, AccountBalance, PinCodeHashed, Salt)
+			Values 
+				(@PersonID, @AccountNumber, @AccountBalance, @PinCodeHashed, @Salt);
+
+				SET @NewClientID = SCOPE_IDENTITY();
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[DeleteById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[DeleteById]
+    @ClientID int,
+	@result Bit Output
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+			
+			if Not Exists (SELECT 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ClientID)
+				Throw 50002, 'Client not found.', 2;
+
+			if Exists (SELECT Found = 1 FROM dbo.ClientTransferRecords CTR Where CTR.FromClientID = @ClientID OR CTR.ToClientID = @ClientID)
+				Throw 50003, 'Cannot delete client : this client is linked to an active transfer records.', 3;
+
+				Delete FROM dbo.Clients
+				Where dbo.Clients.ClientID = @ClientID;
+
+			if (@@ROWCOUNT > 0)
+				SET @result = 1;
+			Else
+				SET @result = 0;
+		END TRY
+		BEGIN CATCH 
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[DepositByAccountNumberAndPinCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[DepositByAccountNumberAndPinCode]
+	@AccountNumber nvarchar(20),
+	@PinCodeHashed nvarchar(64),
+	@DepositAmount decimal(18,2),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@AccountNumber is Null Or Trim(@AccountNumber) = '')
+				Throw 50001, 'Account Number is required.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber)
+				Throw 50002, 'Client not found.', 2;
+
+			if Not Exists
+			(
+				SELECT 
+					Found = 1 
+				FROM dbo.Clients 
+				Where
+					dbo.Clients.AccountNumber = @AccountNumber
+				AND
+					dbo.Clients.PinCodeHashed = @PinCodeHashed
+			)
+				Throw 50003, 'Incorrect Account Number Or PIN Code.', 3;
+
+			if (@DepositAmount <= 0)
+				Throw 50004, 'Deposit Amount cannot be a negative number.', 4;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Clients
+				SET		
+					AccountBalance += @DepositAmount
+				Where 
+					dbo.Clients.AccountNumber = @AccountNumber
+				AND 
+					dbo.Clients.PinCodeHashed = @PinCodeHashed;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[ExistsByAccountNumber]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[ExistsByAccountNumber]
+	@AccountNumber nvarchar(20),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@AccountNumber is Null Or Trim(@AccountNumber) = '')
+				Throw 50001, 'Account Number is required.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[ExistsByAccountNumberAndPinCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[ExistsByAccountNumberAndPinCode]
+	@AccountNumber nvarchar(20),
+	@PinCodeHashed nvarchar(64),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@AccountNumber is Null Or Trim(@AccountNumber) = '')
+				Throw 50001, 'Account Number is required.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber)
+				Throw 50002, 'Client not found.', 2;
+
+			if (@PinCodeHashed is Null Or Trim(@PinCodeHashed) = '')
+				Throw 50003, 'PIN Code is required.', 3;
+
+			if Exists 
+			(
+				SELECT 
+					Found = 1 
+				FROM dbo.Clients
+				Where 
+				dbo.Clients.AccountNumber = @AccountNumber
+				AND
+				dbo.Clients.PinCodeHashed = @PinCodeHashed
+			)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[ExistsByAccountNumberForUpdate]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[ExistsByAccountNumberForUpdate]
+	@ClientID Int,
+	@AccountNumber nvarchar(20),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ClientID)
+				Throw 50002, 'Client not found.', 2;
+
+			if (@AccountNumber is Null Or Trim(@AccountNumber) = '')
+				Throw 50003, 'Account Number is required.', 3;
+
+			if Exists 
+				(
+					SELECT
+						Found = 1
+					FROM dbo.Clients
+					Where
+						dbo.Clients.AccountNumber = @AccountNumber
+						AND 
+						dbo.Clients.ClientID != @ClientID
+				)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[ExistsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[ExistsById]
+	@ClientID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ClientID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[ExistsByIdAndPinCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[ExistsByIdAndPinCode]
+	@ClientID Int,
+	@PinCodeHashed nvarchar(64),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ClientID)
+				Throw 50002, 'Client not found.', 2;
+
+			if (@PinCodeHashed is Null Or Trim(@PinCodeHashed) = '')
+				Throw 50003, 'PIN Code is required.', 3;
+
+			if Exists 
+			(
+				SELECT 
+					Found = 1 
+				FROM dbo.Clients
+				Where 
+				dbo.Clients.ClientID = @ClientID
+				AND
+				dbo.Clients.PinCodeHashed = @PinCodeHashed
+			)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[ExistsByPersonId]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[ExistsByPersonId]
+	@PersonID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002, 'Person not found.', 2;
+
+			if Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.PersonID = @PersonID)
+				SET @result = 1;
+			else
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[GetAll]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[GetAll]
+	@PageNumber Int,
+	@PageSize Int
+AS
+Begin
+	SET NoCount ON;
+		Begin Try
+
+			if (@PageNumber <= 0)
+				Throw 50001, 'Page number must be a positive.', 1;
+
+			if (@PageSize <= 0)
+				Throw 50002, 'Page size must be a positive.', 2;
+
+			SELECT 
+				ClientID,
+				FirstName,
+				LastName,
+				CountryName,
+				Email,
+				Phone,
+				AccountNumber,
+				AccountBalance
+			FROM dbo.GetAllClients_View
+			Order By FirstName ASC
+			OffSet (@PageNumber - 1) * @PageSize
+			Rows
+			Fetch Next @PageSize Rows Only;
+			
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [Clients].[GetByAccountNumber]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[GetByAccountNumber]
+	@AccountNumber nvarchar(20)
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@AccountNumber is Null Or Trim(@AccountNumber) = '')
+				Throw 50001, 'Account Number is required.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber)
+				Throw 50002, 'Client not found.', 2;
+
+				SELECT 
+					Cl.ClientID,
+					Cl.PersonID,
+					Cl.AccountNumber,
+					Cl.AccountBalance,
+					Cl.PinCodeHashed,
+					Cl.Salt
+				FROM dbo.Clients Cl
+				Where Cl.AccountNumber = @AccountNumber;
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[GetById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[GetById]
+	@ClientID int
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ClientID)
+				Throw 50002, 'Client not found.', 2;
+
+				SELECT 
+					Cl.ClientID,
+					Cl.PersonID,
+					Cl.AccountNumber,
+					Cl.AccountBalance,
+					Cl.PinCodeHashed,
+					Cl.Salt
+				FROM dbo.Clients Cl
+				Where Cl.ClientID = @ClientID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[GetByPersonId]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[GetByPersonId]
+	@PersonID int
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002, 'Person not found.', 2;
+
+				SELECT 
+					Cl.ClientID,
+					Cl.PersonID,
+					Cl.AccountNumber,
+					Cl.AccountBalance,
+					Cl.PinCodeHashed,
+					Cl.Salt
+				FROM dbo.Clients Cl
+				Where Cl.PersonID = @PersonID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[GetTotalBalances]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[GetTotalBalances]
+	@ClientsTotalBalance decimal(18,2) Output
+AS
+Begin
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+	Declare @TotalBalance decimal(18,2);
+		Begin Try
+
+			SELECT 
+				@TotalBalance = SUM(Cl.AccountBalance)
+			FROM dbo.Clients Cl
+
+			if (@TotalBalance is Null)
+				SET @TotalBalance = 0;
+
+				SET @ClientsTotalBalance = @TotalBalance;
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [Clients].[HasTransferRecordById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[HasTransferRecordById]
+	@ClientID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ClientID)
+				Throw 50002, 'Client not found.', 2;
+
+			if Exists 
+			(
+				SELECT
+					Found = 1
+				FROM dbo.ClientTransferRecords 
+				Where 
+					dbo.ClientTransferRecords.FromClientID = @ClientID 
+					OR 
+					dbo.ClientTransferRecords.ToClientID = @ClientID
+			)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[UpdateById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[UpdateById]
+	@ClientID int,
+	@PersonID Int,
+	@AccountNumber nvarchar(20),
+	@AccountBalance decimal(18,2),
+	@PinCodeHashed nvarchar(64),
+	@Salt nvarchar(64),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ClientID)
+				Throw 50002, 'Client not found.', 2;
+
+			if (@PersonID <= 0)
+				Throw 50003, 'Person Id must be a positive number.', 3;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50004, 'Person not found.', 4;
+
+			if Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber and dbo.Clients.ClientID != @ClientID)
+				Throw 50005, 'Account Number is already in use.', 5;
+
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Clients
+				SET		
+					PersonID = @PersonID,
+					AccountNumber = @AccountNumber,
+					AccountBalance = @AccountBalance,
+					PinCodeHashed = @PinCodeHashed,
+					Salt = @Salt
+				Where dbo.Clients.ClientID = @ClientID;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[UpdatePinCodeByAccountNumberAndPinCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[UpdatePinCodeByAccountNumberAndPinCode]
+	@AccountNumber nvarchar(20),
+	@CurrentPinCodeHashed nvarchar(64),
+	@NewPinCodeHashed nvarchar(64),
+	@NewSalt nvarchar(64),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@AccountNumber is Null Or Trim(@AccountNumber) = '')
+				Throw 50001, 'Account Number is required.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber)
+				Throw 50002, 'Client not found.', 2;
+
+			if (@CurrentPinCodeHashed is Null Or Trim(@CurrentPinCodeHashed) = '')
+				Throw 50003, 'Current PIN Code is required.', 3;
+
+			if Not Exists
+			(
+				SELECT
+					Found = 1 
+				FROM 
+					dbo.Clients 
+				Where 
+					dbo.Clients.AccountNumber = @AccountNumber
+				AND
+					dbo.Clients.PinCodeHashed = @CurrentPinCodeHashed
+			)
+				Throw 50004, 'Incorrect Account Number Or PIN Code.', 4;
+
+			if (@NewPinCodeHashed is Null OR Trim(@NewPinCodeHashed) = '')
+				Throw 50005, 'New PIN Code is required.', 5;
+
+			if (@NewSalt is Null OR Trim(@NewSalt) = '')
+				Throw 50006, 'An error occurred while processing the password.', 6;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Clients
+				SET		
+					PinCodeHashed = @NewPinCodeHashed,
+					Salt = @NewSalt
+				Where 
+					dbo.Clients.AccountNumber = @AccountNumber
+				AND		
+					dbo.Clients.PinCodeHashed = @CurrentPinCodeHashed;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Clients].[WithdrawByAccountNumberAndPinCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Clients].[WithdrawByAccountNumberAndPinCode]
+	@AccountNumber nvarchar(20),
+	@PinCodeHashed nvarchar(64),
+	@WithdrawAmount decimal(18,2),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+	Declare @AccountBalance decimal(18,2);
+
+		BEGIN TRY
+			if (@AccountNumber is Null Or Trim(@AccountNumber) = '')
+				Throw 50001, 'Account Number is required.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.AccountNumber = @AccountNumber)
+				Throw 50002, 'Client not found.', 2;
+
+			if Not Exists
+			(
+				SELECT
+					Found = 1 
+				FROM dbo.Clients
+				Where 
+					dbo.Clients.AccountNumber = @AccountNumber
+					AND
+					dbo.Clients.PinCodeHashed = @PinCodeHashed
+			)
+				Throw 50003, 'Incorrect Account Number Or PIN Code.', 3;
+
+			SELECT
+				@AccountBalance = dbo.Clients.AccountBalance
+			FROM dbo.Clients 
+			Where 
+				dbo.Clients.AccountNumber = @AccountNumber
+				AND 
+				dbo.Clients.PinCodeHashed = @PinCodeHashed;
+
+			if (@WithdrawAmount > @AccountBalance)
+				Throw 50004, 'Insufficient balance to complete the withdrawal.', 4;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Clients
+				SET
+					AccountBalance -= @WithdrawAmount
+				Where 
+					dbo.Clients.AccountNumber = @AccountNumber
+				AND 
+					dbo.Clients.PinCodeHashed = @PinCodeHashed;;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [ClientTransferRecords].[AddNew]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [ClientTransferRecords].[AddNew]
+	@FromClientID Int,
+	@ToClientID Int,
+	@TransferAmount decimal(18,2),
+	@ByUserID Int,
+	@NewTransferID Int Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+
+	DECLARE @FromBalance DECIMAL(18,2);
+    DECLARE @ToBalance DECIMAL(18,2);
+    DECLARE @FromBalanceAfter DECIMAL(18,2);
+    DECLARE @ToBalanceAfter DECIMAL(18,2);
+
+		BEGIN TRY
+			if (@FromClientID <= 0)
+				Throw 50001, 'From Client Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.ClientID = @FromClientID)
+				Throw 50002, 'From Client not found.', 2;
+
+			if (@ToClientID <= 0)
+				Throw 50003, 'To Client Id must be a positive number.', 3;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.ClientID = @ToClientID)
+				Throw 50004, 'To Client not found.', 4;
+
+			if (@FromClientID = @ToClientID)
+				Throw 50005, 'Transfer cannot be made to same account.', 5;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserID = @ByUserID)
+				Throw 50006, 'User not found.', 6;
+
+			-- بدء معاملة آمنة
+			BEGIN TRANSACTION;
+
+			-- (race condition قفل الصفوف لقراءة وتحديث آمنين (لتجنب
+			SELECT 
+				@FromBalance = dbo.Clients.AccountBalance
+			FROM
+				dbo.Clients WITH (UPDLOCK, ROWLOCK)
+			WHERE
+				ClientID = @FromClientID;
+
+			SELECT
+				@ToBalance = dbo.Clients.AccountBalance
+			FROM
+				dbo.Clients WITH (UPDLOCK, ROWLOCK)
+			WHERE 
+				ClientID = @ToClientID;
+
+			-- التحقق من كفاية الرصيد
+			IF(@FromBalance < @TransferAmount)
+			    THROW 50007, 'Insufficient balance in source account.', 7;
+
+			-- حساب الأرصدة الجديدة
+			SET @FromBalanceAfter = @FromBalance - @TransferAmount;
+			SET @ToBalanceAfter = @ToBalance + @TransferAmount;
+
+			-- تحديث الأرصدة
+			UPDATE dbo.Clients SET AccountBalance = @FromBalanceAfter WHERE ClientID = @FromClientID;
+			UPDATE dbo.Clients SET AccountBalance = @ToBalanceAfter WHERE ClientID = @ToClientID;
+
+			INSERT INTO dbo.ClientTransferRecords
+				(DateTime, FromClientID, ToClientID, TransferAmount, FromBalanceAfterTransfer, ToBalanceAfterTransfer, ByUserID)
+			Values 
+				(GetDate(), @FromClientID, @ToClientID, @TransferAmount, @FromBalanceAfter, @ToBalanceAfter, @ByUserID);
+
+			SET @NewTransferID = SCOPE_IDENTITY();
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [ClientTransferRecords].[ExistsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [ClientTransferRecords].[ExistsById]
+	@TransferID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@TransferID <= 0)
+				Throw 50001, 'Transfer Id must be a positive number.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.ClientTransferRecords Where dbo.ClientTransferRecords.TransferID = @TransferID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [ClientTransferRecords].[GetAll]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [ClientTransferRecords].[GetAll]
+	@PageNumber Int,
+	@PageSize Int
+AS
+Begin
+	SET NoCount ON;
+		Begin Try
+
+			if (@PageNumber <= 0)
+				Throw 50001, 'Page Number must be a positive.', 1;
+
+			if (@PageSize <= 0)
+				Throw 50002, 'Page Size must be a positive.', 2;
+
+			SELECT 
+				TransferID,
+				DateTime,
+				FromClient AS FromClientName,
+				ToClient AS ToClientName,
+				TransferAmount,
+				FromBalanceAfterTransfer,
+				ToBalanceAfterTransfer,
+				[ByUserName]
+			FROM dbo.GetAllClientTransferRecords_View
+			Order By TransferID DESC
+			OffSet (@PageNumber - 1) * @PageSize
+			Rows
+			Fetch Next @PageSize Rows Only;
+
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [ClientTransferRecords].[GetByClientId]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [ClientTransferRecords].[GetByClientId]
+	@ClientID int
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@ClientID <= 0)
+				Throw 50001, 'Client Id must be a positive number.', 1;
+
+			if Not Exists
+			(
+				SELECT
+					Found = 1 
+				FROM dbo.ClientTransferRecords
+				Where
+					dbo.ClientTransferRecords.FromClientID = @ClientID
+					OR 
+					dbo.ClientTransferRecords.ToClientID = @ClientID
+			)
+				Throw 50002, 'Client Transfer Record not found.', 2;
+
+			SELECT 
+				TransferID,
+				DateTime,
+				FromClient AS FromClientName,
+				ToClient AS ToClientName,
+				TransferAmount,
+				FromBalanceAfterTransfer,
+				ToBalanceAfterTransfer,
+				[ByUserName]
+			FROM 
+				dbo.GetClientTransferRecordsByClientId_View
+			Where
+				dbo.GetClientTransferRecordsByClientId_View.FromClientID = 1
+				OR 
+				dbo.GetClientTransferRecordsByClientId_View.ToClientID = 1
+			Order By DateTime DESC;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [ClientTransferRecords].[GetById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [ClientTransferRecords].[GetById] 
+	@TransferID int
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@TransferID <= 0)
+				Throw 50001, 'Transfer Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.ClientTransferRecords Where dbo.ClientTransferRecords.TransferID = @TransferID)
+				Throw 50002, 'Client Transfer Record not found.', 2;
+
+			SELECT 
+				TransferID,
+				DateTime,
+				FromClient AS FromClientName,
+				ToClient AS ToClientName,
+				TransferAmount,
+				FromBalanceAfterTransfer,
+				ToBalanceAfterTransfer,
+				[ByUserName]
+			FROM 
+				dbo.GetAllClientTransferRecords_View
+			Where
+				dbo.GetAllClientTransferRecords_View.TransferID = @TransferID
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[AddNew]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[AddNew]
+	@CountryName nvarchar(100),
+	@CurrencyID int,
+	@NewCountryID int Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@CountryName is Null OR Trim(@CountryName) = '')
+				Throw 50001, 'Country name is required.', 1;
+
+			if Exists(SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryName = @CountryName)
+				Throw 50002, 'Country name already exists.', 2;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50003, 'Currency not found.', 3;
+
+			INSERT INTO dbo.Countries
+				(CountryName, CurrencyID)
+			Values 
+				(@CountryName, @CurrencyID);
+
+				SET @NewCountryID = SCOPE_IDENTITY();
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[DeleteById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Countries].[DeleteById]
+    @CountryID int,
+	@result Bit Output
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if(@CountryID <= 0)
+				Throw 50001, 'Country Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				Throw 50002, 'Country not found.', 2;
+
+			if Exists (SELECT 1 FROM dbo.People Where dbo.People.CountryID = @CountryID)
+				Throw 50003, 'Cannot delete country : this country linked to an active person account.', 3;
+
+			Delete FROM dbo.Countries
+			Where dbo.Countries.CountryID = @CountryID;
+
+			if (@@ROWCOUNT > 0)
+				SET @result = 1;
+			Else
+				SET @result = 0;
+		END TRY
+		BEGIN CATCH 
+			THROW;
+		END CATCH
+END;
+GO
+/****** Object:  StoredProcedure [Countries].[ExistsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[ExistsById]
+	@CountryID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CountryID <= 0)
+				Throw 50001, 'Country Id must be a positive number.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[ExistsByName]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[ExistsByName]
+	@CountryName nvarchar(100),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CountryName is Null Or Trim(@CountryName) = '')
+				Throw 50001, 'Country name is required.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryName = @CountryName)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[ExistsByNameForUpdate]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[ExistsByNameForUpdate]
+	@CountryID int,
+	@CountryName nvarchar(100),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CountryID <= 0)
+				Throw 50001, 'Country Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				Throw 50002, 'Country not found.', 2;
+
+			if (@CountryName is Null Or Trim(@CountryName) = '')
+				Throw 50003, 'Country name is required.', 3;
+
+			if Exists 
+			(
+				SELECT
+					Found = 1 
+				FROM dbo.Countries
+				Where
+					dbo.Countries.CountryName = @CountryName
+					AND
+					dbo.Countries.CountryID != @CountryID
+			)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[GetAll]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[GetAll]
+	@PageNumber Int,
+	@PageSize Int
+AS
+Begin
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		Begin Try
+
+			if (@PageNumber <= 0)
+				Throw 50001, 'Page Number must be a positive.', 1;
+
+			if (@PageSize <= 0)
+				Throw 50002, 'Page Size must be a positive.', 2;
+
+			SELECT 
+				CountryID,
+				CountryName,
+				CurrencyName,
+				CurrencyCode,
+				CurrencyRate
+			FROM dbo.GetAllCountries_View
+			Order By CountryName ASC
+			OffSet (@PageNumber - 1) * @PageSize
+			Rows
+			Fetch Next @PageSize Rows Only;
+
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [Countries].[GetByCurrencyId]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE Procedure [Countries].[GetByCurrencyId]
+	@CurrencyID int
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CurrencyID = @CurrencyID)
+				Throw 50002, 'Country not found.', 2;
+
+				SELECT 
+					Co.CountryID,
+					Co.CountryName,
+					Cu.CurrencyName,
+					Cu.CurrencyCode,
+					Cu.CurrencyRate
+				FROM 
+					dbo.Countries Co INNER JOIN dbo.Currencies Cu
+				ON 
+					Co.CountryID = Cu.CurrencyID
+				Where 
+					Co.CurrencyID = @CurrencyID;
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[GetById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[GetById]
+	@CountryID int
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CountryID <= 0)
+				Throw 50001, 'Country Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				Throw 50002, 'Country not found.', 2;
+
+				SELECT 
+					Co.CountryID,
+					Co.CountryName,
+					Co.CurrencyID
+				FROM dbo.Countries Co
+				Where Co.CountryID = @CountryID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[GetByName]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Countries].[GetByName]
+	@CountryName nvarchar(100)
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CountryName is Null Or Trim(@CountryName) = '')
+				Throw 50001, 'Country name is required.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryName = @CountryName)
+				Throw 50002, 'Country not found.', 2;
+
+				SELECT 
+					Co.CountryID,
+					Co.CountryName,
+					Co.CurrencyID
+				FROM dbo.Countries Co
+				Where Co.CountryName = @CountryName;
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[HasPeopleById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[HasPeopleById]
+	@CountryID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@CountryID <= 0)
+				Throw 50001, 'Country Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				Throw 50002, 'Country not found.', 2;
+
+			if Exists (SELECT 1 FROM dbo.People Where dbo.People.CountryID = @CountryID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Countries].[UpdateById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Countries].[UpdateById]
+	@CountryID int,
+	@CountryName nvarchar(100),
+	@CurrencyID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@CountryID <= 0)
+				Throw 50001, 'Country Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				Throw 50002, 'Country not found.', 2;
+
+			if Exists(SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryName = @CountryName and dbo.Countries.CountryID != @CountryID)
+				Throw 50003, 'Country name is already in use.', 3;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50004, 'Currency not found.', 4;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Countries
+				SET		
+					CountryName = @CountryName,
+					CurrencyID = @CurrencyID
+				Where 
+					dbo.Countries.CountryID = @CountryID;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[AddNew]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Currencies].[AddNew]
+	@CurrencyName nvarchar(100),
+	@CurrencyCode nvarchar(10),
+	@CurrencyRate decimal(18,2),
+	@NewCurrencyID int Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@CurrencyName is Null OR Trim(@CurrencyName) = '')
+				Throw 50001, 'Currency name is required.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyName = @CurrencyName)
+				Throw 50002, 'Currency name already exists.', 2;
+
+			if (@CurrencyCode is Null OR Trim(@CurrencyCode) = '')
+				Throw 50003, 'Currency Code is required.', 3;
+
+			if Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyCode = @CurrencyCode)
+				Throw 50004, 'Currency code already exists.', 4;
+
+			if (@CurrencyRate <= 0)
+				Throw 50005, 'Currency rate cannot be a negative.', 5;
+
+			INSERT INTO dbo.Currencies
+				(CurrencyName, CurrencyCode, CurrencyRate)
+			Values 
+				(@CurrencyName, @CurrencyCode, @CurrencyRate);
+
+				SET @NewCurrencyID = SCOPE_IDENTITY();
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[DeleteById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Currencies].[DeleteById]
+    @CurrencyID int,
+	@result Bit Output
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if(@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50002, 'Currency not found.', 2;
+
+			if Exists (SELECT 1 FROM dbo.Countries Where dbo.Countries.CurrencyID = @CurrencyID)
+				Throw 50003, 'Cannot delete currency : this currency linked to an active country.', 3;
+
+			Delete FROM dbo.Currencies
+			Where dbo.Currencies.CurrencyID = @CurrencyID;
+
+			if (@@ROWCOUNT > 0)
+				SET @result = 1;
+			Else
+				SET @result = 0;
+		END TRY
+		BEGIN CATCH 
+			THROW;
+		END CATCH
+END;
+GO
+/****** Object:  StoredProcedure [Currencies].[ExistsByCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Currencies].[ExistsByCode]
+	@CurrencyCode nvarchar(10),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyCode is Null Or Trim(@CurrencyCode) = '')
+				Throw 50001, 'Currency code is required.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyCode = @CurrencyCode)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[ExistsByCodeForUpdate]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [Currencies].[ExistsByCodeForUpdate]
+	@CurrencyID int,
+	@CurrencyCode nvarchar(10),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50002, 'Currency not found.', 2;
+
+			if (@CurrencyCode is Null Or Trim(@CurrencyCode) = '')
+				Throw 50003, 'Currency code is required.', 3;
+
+			if Exists 
+				(
+					SELECT 
+						Found = 1 
+					FROM dbo.Currencies
+					Where 
+						dbo.Currencies.CurrencyCode = @CurrencyCode
+					AND 
+						dbo.Currencies.CurrencyID != @CurrencyID
+				)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[ExistsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Currencies].[ExistsById]
+	@CurrencyID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[ExistsByName]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [Currencies].[ExistsByName]
+	@CurrencyName nvarchar(100),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyName is Null Or Trim(@CurrencyName) = '')
+				Throw 50001, 'Currency name is required.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyName = @CurrencyName)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[ExistsByNameForUpdate]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [Currencies].[ExistsByNameForUpdate]
+	@CurrencyID int,
+	@CurrencyName nvarchar(100),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50002, 'Currency not found.', 2;
+
+			if (@CurrencyName is Null Or Trim(@CurrencyName) = '')
+				Throw 50003, 'Currency name is required.', 3;
+
+			if Exists 
+			(
+				SELECT
+					Found = 1 
+				FROM dbo.Currencies
+				Where
+					dbo.Currencies.CurrencyName = @CurrencyName
+					AND
+					dbo.Currencies.CurrencyID != @CurrencyID
+			)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[GetAll]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Currencies].[GetAll]
+	@PageNumber Int,
+	@PageSize Int
+AS
+Begin
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		Begin Try
+
+			SELECT 
+				CurrencyID,
+				CurrencyName,
+				CurrencyCode,
+				CurrencyRate
+			FROM dbo.GetAllCurrencies_View
+			Order By CurrencyName ASC
+			OffSet (@PageNumber - 1) * @PageSize
+			Rows
+			Fetch Next @PageSize Rows Only;
+
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[GetByCode]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Currencies].[GetByCode]
+	@CurrencyCode nvarchar(10)
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyCode is Null Or Trim(@CurrencyCode) = '')
+				Throw 50001, 'Currency code is required.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyCode = @CurrencyCode)
+				Throw 50002, 'Currency not found.', 2;
+
+				SELECT 
+					Cu.CurrencyID,
+					Cu.CurrencyName,
+					Cu.CurrencyCode,
+					Cu.CurrencyRate
+				FROM dbo.Currencies Cu
+				Where Cu.CurrencyCode = @CurrencyCode;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[GetById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [Currencies].[GetById]
+	@CurrencyID int	
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50002, 'Currency not found.', 2;
+
+				SELECT 
+					Cu.CurrencyID,
+					Cu.CurrencyName,
+					Cu.CurrencyCode,
+					Cu.CurrencyRate
+				FROM dbo.Currencies Cu
+				Where Cu.CurrencyID = @CurrencyID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[HasCountriesById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Currencies].[HasCountriesById]
+	@CurrencyID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50002, 'Currency not found.', 2;
+
+			if Exists (SELECT 1 FROM dbo.Countries Where dbo.Countries.CurrencyID = @CurrencyID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[UpdateById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Currencies].[UpdateById]
+	@CurrencyID int,
+	@CurrencyName nvarchar(100),
+	@CurrencyCode nvarchar(10),
+	@CurrencyRate decimal(18,2),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50002, 'Currency not found.', 2;
+
+			if (@CurrencyName is Null OR Trim(@CurrencyName) = '')
+				Throw 50003, 'Currency name is required.', 3;
+
+			if Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyName = @CurrencyName AND dbo.Currencies.CurrencyID != @CurrencyID)
+				Throw 50004, 'Currency name already exists.', 4;
+
+			if (@CurrencyCode is Null OR Trim(@CurrencyCode) = '')
+				Throw 50005, 'Currency code is required.', 5;
+
+			if Exists (SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyCode = @CurrencyCode AND dbo.Currencies.CurrencyID != @CurrencyID)
+				Throw 50006, 'Currency code already exists.', 6;
+
+			if (@CurrencyRate <= 0)
+				Throw 50007, 'Currency rate cannot be a negative.', 7;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Currencies
+				SET		
+					CurrencyName = @CurrencyName,
+					CurrencyCode = @CurrencyCode,
+					CurrencyRate = @CurrencyRate
+				Where dbo.Currencies.CurrencyID = @CurrencyID;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Currencies].[UpdateRateById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Currencies].[UpdateRateById]
+	@CurrencyID int,
+	@NewCurrencyRate nvarchar(10),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@CurrencyID <= 0)
+				Throw 50001, 'Currency Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Currencies Where dbo.Currencies.CurrencyID = @CurrencyID)
+				Throw 50002, 'Currency not found.', 2;
+
+			if (@NewCurrencyRate <= 0)
+				Throw 50003, 'New currency rate cannot be a negative.', 3;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Currencies
+				SET		
+					CurrencyRate = @NewCurrencyRate
+				Where dbo.Currencies.CurrencyID = @CurrencyID;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [dbo].[KOKO]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [dbo].[KOKO]
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			BEGIN TRANSACTION;
+
+				Update dbo.UserLoginRecords
+				SET 
+					UserID = 1
+				Where 
+					dbo.UserLoginRecords.LoginID = 1;
+
+
+				INSERT INTO dbo.UserLoginRecords
+					(LoginID, UserID, DateTime)
+				Values
+					(9, 1, GetDate());
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[AddNew]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [People].[AddNew]
+	@FirstName nvarchar(50),
+	@LastName nvarchar(50),
+	@CountryID int,
+	@Phone nvarchar(20),
+	@Email nvarchar(100),
+	@NewPersonID int Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if Not Exists(SELECT Found = 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				Throw 50001, 'Country not found.', 1;
+
+			if Exists(SELECT 1 FROM dbo.People Where dbo.People.Email = @Email)
+				Throw 50002, 'Email is already in use.', 2;
+
+			if Exists(SELECT 1 FROM dbo.People Where dbo.People.Phone = @Phone)
+				Throw 50003, 'Phone Number is already in use.', 3;
+
+			INSERT INTO dbo.People
+				(FirstName, LastName, CountryID, Phone, Email)
+			Values 
+				(@FirstName, @LastName, @CountryID, @Phone, @Email);
+
+				SET @NewPersonID = SCOPE_IDENTITY();
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[DeleteById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [People].[DeleteById]
+    @PersonID int,
+	@result Bit Output
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if(@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002, 'Person not found.', 2;
+
+			if Exists (SELECT 1 FROM dbo.Clients Where dbo.Clients.PersonID = @PersonID)
+				Throw 50003, 'Cannot delete Person : this person linked to an active client account.', 3;
+
+			if Exists (SELECT 1 FROM dbo.Users Where dbo.Users.PersonID = @PersonID)
+				Throw 50004, 'Cannot delete Person : this person linked to an active user account.', 4;
+
+				Delete FROM dbo.People
+				Where dbo.People.PersonID = @PersonID;
+
+			if (@@ROWCOUNT > 0)
+				SET @result = 1;
+			Else
+				SET @result = 0;
+		END TRY
+		BEGIN CATCH 
+			THROW;
+		END CATCH
+END;
+GO
+/****** Object:  StoredProcedure [People].[ExistsByEmail]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [People].[ExistsByEmail]
+	@Email nvarchar(100),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@Email is Null Or Trim(@Email) = '') 
+				Throw 50001, 'Email is required.', 1;
+			
+			if Exists (SELECT IsFound = 1 FROM dbo.People Where dbo.People.Email = @Email)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[ExistsByEmailForUpdate]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [People].[ExistsByEmailForUpdate]
+	@PersonID Int,
+	@Email nvarchar(100),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@PersonID <= 0) 
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if (@Email is Null Or Trim(@Email) = '') 
+				Throw 50002, 'Email is required.', 2;
+
+			if Not Exists (SELECT IsFound = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50003, 'Person not found.', 3;
+
+			if Exists 
+				(
+					SELECT 
+						IsFound = 1
+					FROM dbo.People
+					Where 
+					dbo.People.Email = @Email
+					AND 
+					dbo.People.PersonID != @PersonID
+				)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[ExistsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+Create Procedure [People].[ExistsById]
+	@PersonID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+			
+			if Exists (SELECT IsFound = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[ExistsByPhone]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [People].[ExistsByPhone]
+	@Phone nvarchar(20),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@Phone is Null Or Trim(@Phone) = '') 
+				Throw 50001, 'Phone is required.', 1;
+
+			if Exists 
+				(
+					SELECT 
+						IsFound = 1
+					FROM dbo.People
+					Where dbo.People.Phone = @Phone
+				)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[ExistsByPhoneForUpdate]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [People].[ExistsByPhoneForUpdate]
+	@PersonID Int,
+	@Phone nvarchar(20),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@PersonID <= 0) 
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if (@Phone is Null Or Trim(@Phone) = '') 
+				Throw 50002, 'Phone is required.', 2;
+
+			if Not Exists (SELECT IsFound = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50003, 'Person not found.', 3;
+
+			if Exists 
+				(
+					SELECT 
+						IsFound = 1
+					FROM dbo.People
+					Where 
+					dbo.People.Phone = @Phone
+					AND 
+					dbo.People.PersonID != @PersonID
+				)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[GetAll]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE Procedure [People].[GetAll]
+	@PageNumber Int,
+	@PageSize Int
+AS
+Begin
+	SET NoCount ON;
+		Begin Try
+			if (@PageNumber <= 0)
+				Throw 50001, 'Page Number must be a positive.', 1;
+
+			if (@PageSize <= 0)
+				Throw 50002, 'Page Size must be a positive.', 2;
+			
+			SELECT 
+				PersonID,
+				FirstName,
+				LastName,
+				CountryName,
+				CurrencyName,
+				CurrencyCode,
+				CurrencyRate,
+				Phone, 
+				Email
+			FROM dbo.GetAllPeople_View
+			Order By FirstName ASC
+			OffSet (@PageNumber - 1) * @PageSize
+			Rows
+			Fetch Next @PageSize Rows Only;
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [People].[GetById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+--[1] - People :-
+
+--	Basic Operation :-
+
+--	People.GetAll	*
+
+--	People.GetById
+
+--	People.Insert
+--	People.Update
+--	People.Delete
+
+--	Validation :-
+
+--	People.ExistsById
+
+--	People.ExistsByEmail
+--	People.ExistsByIdAndEmail
+
+--	People.ExistsByPhone
+--	People.ExistsByIdAndPhone
+
+--	People.IsClient
+--	People.IsUser
+
+Create Procedure [People].[GetById]
+	@PersonID int
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if(@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002, 'Person not found.', 2;
+
+				SELECT 
+					PersonID,
+					FirstName,
+					LastName,
+					CountryID,
+					Phone,
+					Email
+				FROM dbo.People
+				Where dbo.People.PersonID = @PersonID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[IsClient]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [People].[IsClient]
+	@PersonID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50001, 'Person not found.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Clients Where dbo.Clients.PersonID = @PersonID)
+				SET @result = 1;
+			else
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[IsUser]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+Create Procedure [People].[IsUser]
+	@PersonID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50001, 'Person not found.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.PersonID = @PersonID)
+				SET @result = 1;
+			else
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [People].[UpdateById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [People].[UpdateById]
+	@PersonID int,
+	@FirstName nvarchar(50),
+	@LastName nvarchar(50),
+	@CountryID int,
+	@Phone nvarchar(20),
+	@Email nvarchar(100),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if(@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002	, 'Person not found.', 2;
+
+			if Not Exists (SELECT 1 FROM dbo.Countries Where dbo.Countries.CountryID = @CountryID)
+				Throw 50003, 'Country not found.', 3;
+
+			if Exists (SELECT 1 FROM dbo.People Where dbo.People.Email = @Email AND dbo.People.PersonID != @PersonID)
+				Throw 50004, 'Email is already in use.', 4;
+
+			if Exists(SELECT 1 FROM dbo.People Where dbo.People.Phone = @Phone AND dbo.People.PersonID != @PersonID)
+				Throw 50005, 'Phone Number is already in use.', 5;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.People
+				SET		
+					FirstName = @FirstName,
+					LastName = @LastName,
+					CountryID = @CountryID,
+					Phone = @Phone,
+					Email = @Email
+				Where dbo.People.PersonID = @PersonID;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [UserLoginRecords].[AddNew]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [UserLoginRecords].[AddNew] 
+	@UserID Int,
+	@NewLoginID int Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				Throw 50002, 'User not found.', 2;
+
+			INSERT INTO dbo.UserLoginRecords
+				(UserID, DateTime)
+			Values 
+				(@UserID, GetDate());
+
+			SET @NewLoginID = SCOPE_IDENTITY();
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [UserLoginRecords].[ExistsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [UserLoginRecords].[ExistsById]
+	@LoginID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@LoginID <= 0)
+				Throw 50001, 'Login Id must be a positive number.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.UserLoginRecords Where dbo.UserLoginRecords.LoginID = @LoginID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [UserLoginRecords].[GetAll]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [UserLoginRecords].[GetAll]
+	@PageNumber Int,
+	@PageSize Int
+AS
+Begin
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		Begin Try
+
+			if (@PageNumber <= 0)
+				Throw 50001, 'Page Number must be a positive.', 1;
+
+			if (@PageSize <= 0)
+				Throw 50002, 'Page Size must be a positive.', 2;
+
+			SELECT 
+				LoginID,
+				DateTime,
+				FirstName,
+				LastName,
+				UserName,
+				CountryName,
+				Email,
+				Phone,
+				PermissionLevel
+			FROM dbo.GetAllUserLoginRecords_View
+			Order By DateTime DESC
+			OffSet (@PageNumber - 1) * @PageSize
+			Rows
+			Fetch Next @PageSize Rows Only;
+
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [UserLoginRecords].[GetById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [UserLoginRecords].[GetById] 
+	@LoginID int
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@LoginID <= 0)
+				Throw 50001, 'Login Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.UserLoginRecords Where dbo.UserLoginRecords.LoginID = @LoginID)
+				Throw 50002, 'User Login Record not found.', 2;
+
+				SELECT 
+					ULR.LoginID,
+					ULR.UserID,
+					ULR.DateTime
+				FROM dbo.UserLoginRecords ULR
+				Where ULR.LoginID = @LoginID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [UserLoginRecords].[GetByUserId]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [UserLoginRecords].[GetByUserId]
+	@UserID int
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.UserLoginRecords Where dbo.UserLoginRecords.UserID = @UserID)
+				Throw 50002, 'User Login Record not found.', 2;
+
+				SELECT 
+					ULR.LoginID,
+					ULR.UserID,
+					ULR.DateTime
+				FROM dbo.UserLoginRecords ULR
+				Where ULR.UserID = @UserID
+				Order By DateTime DESC;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[AddNew]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Users].[AddNew]
+	@PersonID Int,
+	@UserName nvarchar(50),
+	@PasswordHashed nvarchar(64),
+	@Salt nvarchar(64),
+	@PermissionLevel Int,
+	@NewUserID int Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002, 'Person not found.', 2;
+
+			if (@UserName is Null OR Trim(@UserName) = '')
+				Throw 50003, 'Username is required.', 3;
+
+			if Exists(SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName)
+				Throw 50004, 'Username is already in use.', 4;
+
+			if (@PasswordHashed is Null OR Trim(@PasswordHashed) = '')
+				Throw 50005, 'Password is required.', 5;
+
+			if (@Salt is Null OR Trim(@Salt) = '')
+				Throw 50006, 'An error occurred while processing the password.', 6;
+
+			INSERT INTO dbo.Users
+				(PersonID, UserName, PasswordHashed, Salt, PermissionLevel)
+			Values
+				(@PersonID, @UserName, @PasswordHashed, @Salt, @PermissionLevel);
+
+			SET @NewUserID = SCOPE_IDENTITY();
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[DeleteById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Users].[DeleteById]
+    @UserID int,
+	@result Bit Output
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				Throw 50002, 'User not found.', 2;
+
+			if Exists (SELECT Found = 1 FROM dbo.UserLoginRecords ULR Where ULR.UserID = @UserID)
+				Throw 50003, 'Cannot delete user : this user is linked to active login records.', 3;
+
+			Delete FROM dbo.Users
+			Where dbo.Users.UserID = @UserID;
+
+			if (@@ROWCOUNT > 0)
+				SET @result = 1;
+			Else
+				SET @result = 0;
+		END TRY
+		BEGIN CATCH 
+			THROW;
+		END CATCH
+END;
+GO
+/****** Object:  StoredProcedure [Users].[ExistsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[ExistsById]
+	@UserID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[ExistsByPersonId]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[ExistsByPersonId]
+	@PersonID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50001, 'Person not found.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.PersonID = @PersonID)
+				SET @result = 1;
+			else
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[ExistsByUsername]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[ExistsByUsername]
+	@UserName nvarchar(50),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@UserName is Null Or Trim(@UserName) = '')
+				Throw 50001, 'Username is required.', 1;
+
+			if Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[ExistsByUsernameAndPassword]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[ExistsByUsernameAndPassword]
+	@Username nvarchar(50),
+	@PasswordHashed nvarchar(64),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@Username is Null Or Trim(@Username) = '')
+				Throw 50001, 'Username is required.', 1;
+
+			if (@PasswordHashed is Null Or Trim(@PasswordHashed) = '')
+				Throw 50002, 'Password is required.', 2;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @Username)
+				Throw 50003, 'User not found.', 3;
+
+			if Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName AND dbo.Users.PasswordHashed = @PasswordHashed)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[ExistsByUsernameForUpdate]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[ExistsByUsernameForUpdate]
+	@UserID int,
+	@UserName nvarchar(50),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				Throw 50002, 'User not found.', 2;
+
+			if (@UserName is Null Or Trim(@UserName) = '')
+				Throw 50003, 'Username is required.', 3;
+
+			if Exists 
+				(
+					SELECT 
+						Found = 1 
+					FROM dbo.Users
+					Where 
+						dbo.Users.UserName = @UserName
+					AND 
+						dbo.Users.UserID != @UserID
+				)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[GetAll]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Users].[GetAll]
+	@PageNumber Int,
+	@PageSize Int
+AS
+Begin
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		Begin Try
+
+			if (@PageNumber <= 0)
+				Throw 50001, 'Page Number must be a positive.', 1;
+
+			if (@PageSize <= 0)
+				Throw 50002, 'Page Size must be a positive.', 2;
+
+			SELECT 
+				UserID,
+				FirstName,
+				LastName,
+				UserName,
+				CountryName,
+				Phone,
+				Email,
+				PermissionLevel
+			FROM dbo.GetAllUsers_View
+			Order By UserName DESC
+			OffSet (@PageNumber - 1) * @PageSize
+			Rows
+			Fetch Next @PageSize Rows Only;
+
+		END Try
+		Begin Catch
+			THROW;
+		END Catch
+END
+GO
+/****** Object:  StoredProcedure [Users].[GetById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Users].[GetById]
+	@UserID int
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				Throw 50002, 'User not found.', 2;
+
+				SELECT 
+					U.UserID,
+					U.PersonID,
+					U.UserName,
+					U.PasswordHashed,
+					U.Salt,
+					U.PermissionLevel
+				FROM dbo.Users U
+				Where U.UserID = @UserID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[GetByPersonId]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[GetByPersonId]
+	@PersonID int
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@PersonID <= 0)
+				Throw 50001, 'Person Id must be a positive number.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.People Where dbo.People.PersonID = @PersonID)
+				Throw 50002, 'Person not found.', 2;
+
+				SELECT 
+					UserID,
+					PersonID,
+					UserName,
+					PasswordHashed,
+					Salt,
+					PermissionLevel
+				FROM dbo.Users
+				Where dbo.Users.PersonID = @PersonID;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[GetByUsername]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Users].[GetByUsername]
+	@Username nvarchar(50)
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@Username is Null Or Trim(@Username) = '')
+				Throw 50001, 'Username is required.', 1;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName)
+				Throw 50002, 'User not found.', 2;
+
+				SELECT 
+					U.UserID,
+					U.PersonID,
+					U.UserName,
+					U.PasswordHashed,
+					U.Salt,
+					U.PermissionLevel
+				FROM dbo.Users U
+				Where U.UserName = @UserName;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[GetByUsernameAndPassword]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[GetByUsernameAndPassword]
+	@Username nvarchar(50),
+	@PasswordHashed nvarchar(64)
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@Username is Null Or Trim(@Username) = '')
+				Throw 50001, 'Username is required.', 1;
+
+			if (@PasswordHashed is Null Or Trim(@PasswordHashed) = '')
+				Throw 50002, 'Password is required.', 2;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName)
+				Throw 50003, 'User not found.', 3;
+
+			if Not Exists (SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName AND dbo.Users.PasswordHashed = @PasswordHashed)
+				Throw 50004, 'Incorrect Username Or Password.', 4;
+
+				SELECT 
+					U.UserID,
+					U.PersonID,
+					U.UserName,
+					U.PasswordHashed,
+					U.Salt,
+					U.PermissionLevel
+				FROM dbo.Users U
+				Where U.UserName = @UserName AND U.PasswordHashed = @PasswordHashed;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[HasClientTransferRecordById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Users].[HasClientTransferRecordById]
+	@UserID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				Throw 50002, 'User not found.', 2;
+
+			if Exists 
+			(
+				SELECT
+					Found = 1
+				FROM dbo.ClientTransferRecords 
+				Where 
+					dbo.ClientTransferRecords.ByUserID = @UserID 
+			)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[HasLoginRecordsById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create Procedure [Users].[HasLoginRecordsById]
+	@UserID int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists (SELECT 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				Throw 50002, 'User not found.', 2;
+
+			if Exists (SELECT 1 FROM dbo.UserLoginRecords Where dbo.UserLoginRecords.UserID = @UserID)
+				SET @result = 1;
+			ELSE
+				SET @result = 0;
+
+		END TRY
+		BEGIN CATCH
+			THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[UpdateById]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+Create Procedure [Users].[UpdateById]
+	@UserID int,
+	@UserName nvarchar(50),
+	@PermissionLevel Int,
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+		BEGIN TRY
+			if (@UserID <= 0)
+				Throw 50001, 'User Id must be a positive number.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserID = @UserID)
+				Throw 50002, 'User not found.', 2;
+
+			if (@UserName is Null OR Trim(@UserName) = '')
+				Throw 50003, 'Username is required.', 3;
+
+			if Exists(SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName AND dbo.Users.UserID != @UserID)
+				Throw 50004, 'Username is already in use.', 4;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Users
+				SET		
+					UserName = @UserName,
+					PermissionLevel = @PermissionLevel
+				Where dbo.Users.UserID = @UserID;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+/****** Object:  StoredProcedure [Users].[UpdatePasswordByUsernameAndPassword]    Script Date: 12/26/2025 12:10:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [Users].[UpdatePasswordByUsernameAndPassword]
+	@UserName nvarchar(50),
+	@CurrentPasswordHashed nvarchar(64),
+	@NewPasswordHashed nvarchar(64),
+	@NewSalt nvarchar(64),
+	@result Bit Output
+AS
+BEGIN
+	SET NoCount ON;
+	SET XACT_ABORT ON;
+		BEGIN TRY
+			if (@UserName is Null Or Trim(@UserName) = '')
+				Throw 50001, 'Username is required.', 1;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName)
+				Throw 50002, 'User not found.', 2;
+
+			if (@CurrentPasswordHashed is Null OR Trim(@CurrentPasswordHashed) = '')
+				Throw 50003, 'Current Password is required.', 3;
+
+			if Not Exists(SELECT Found = 1 FROM dbo.Users Where dbo.Users.UserName = @UserName AND dbo.Users.PasswordHashed = @CurrentPasswordHashed)
+				Throw 50004, 'Incorrect User Id Or Password.', 4;
+
+			if (@NewPasswordHashed is Null OR Trim(@NewPasswordHashed) = '')
+				Throw 50005, 'New Password is required.', 5;
+
+			if (@NewSalt is Null OR Trim(@NewSalt) = '')
+				Throw 50006, 'An error occurred while proccessing the password.', 6;
+
+			BEGIN TRANSACTION;
+
+				Update dbo.Users
+				SET		
+					PasswordHashed = @NewPasswordHashed,
+					Salt = @NewSalt
+				Where 
+					dbo.Users.UserName = @UserName
+					AND 
+					dbo.Users.PasswordHashed = @CurrentPasswordHashed;
+
+				if (@@RowCount > 0)
+					SET @result = 1;
+				ELSE
+					SET @result = 0;
+
+			COMMIT TRANSACTION;
+		END TRY
+		BEGIN CATCH
+			if (@@TRANCOUNT > 0) 
+				ROLLBACK TRANSACTION;
+
+				THROW;
+		END CATCH
+END
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "Cl"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 216
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Pe"
+            Begin Extent = 
+               Top = 6
+               Left = 254
+               Bottom = 136
+               Right = 424
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Co"
+            Begin Extent = 
+               Top = 6
+               Left = 462
+               Bottom = 119
+               Right = 632
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllClients_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllClients_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "CTR"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 214
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "C1"
+            Begin Extent = 
+               Top = 6
+               Left = 252
+               Bottom = 136
+               Right = 430
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "C2"
+            Begin Extent = 
+               Top = 6
+               Left = 893
+               Bottom = 136
+               Right = 1071
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "P1"
+            Begin Extent = 
+               Top = 6
+               Left = 685
+               Bottom = 136
+               Right = 855
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "P2"
+            Begin Extent = 
+               Top = 6
+               Left = 1109
+               Bottom = 136
+               Right = 1279
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "U"
+            Begin Extent = 
+               Top = 6
+               Left = 468
+               Bottom = 136
+               Right = 647
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+   ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllClientTransferRecords_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'      Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllClientTransferRecords_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllClientTransferRecords_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "Cu"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 208
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Co"
+            Begin Extent = 
+               Top = 6
+               Left = 246
+               Bottom = 119
+               Right = 416
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllCountries_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllCountries_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "Currencies"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 240
+               Right = 208
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 2490
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllCurrencies_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllCurrencies_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "P"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 208
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Co"
+            Begin Extent = 
+               Top = 6
+               Left = 246
+               Bottom = 119
+               Right = 416
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Cu"
+            Begin Extent = 
+               Top = 6
+               Left = 454
+               Bottom = 136
+               Right = 624
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllPeople_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllPeople_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "ULR"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 119
+               Right = 208
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "U"
+            Begin Extent = 
+               Top = 6
+               Left = 246
+               Bottom = 136
+               Right = 425
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "P"
+            Begin Extent = 
+               Top = 6
+               Left = 463
+               Bottom = 136
+               Right = 633
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Co"
+            Begin Extent = 
+               Top = 6
+               Left = 671
+               Bottom = 119
+               Right = 841
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllUserLoginRecords_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllUserLoginRecords_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "U"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 217
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "P"
+            Begin Extent = 
+               Top = 6
+               Left = 255
+               Bottom = 136
+               Right = 425
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Co"
+            Begin Extent = 
+               Top = 6
+               Left = 463
+               Bottom = 119
+               Right = 633
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllUsers_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetAllUsers_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "CTR"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 265
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "C1"
+            Begin Extent = 
+               Top = 6
+               Left = 303
+               Bottom = 136
+               Right = 481
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "C2"
+            Begin Extent = 
+               Top = 6
+               Left = 519
+               Bottom = 136
+               Right = 697
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "P1"
+            Begin Extent = 
+               Top = 6
+               Left = 735
+               Bottom = 136
+               Right = 905
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "P2"
+            Begin Extent = 
+               Top = 6
+               Left = 943
+               Bottom = 136
+               Right = 1113
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "U"
+            Begin Extent = 
+               Top = 6
+               Left = 1151
+               Bottom = 136
+               Right = 1330
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+   ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetClientTransferRecordsByClientId_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'      Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetClientTransferRecordsByClientId_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetClientTransferRecordsByClientId_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "Co"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 119
+               Right = 208
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Cu"
+            Begin Extent = 
+               Top = 6
+               Left = 246
+               Bottom = 136
+               Right = 416
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetCountriesByCurrencyId_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetCountriesByCurrencyId_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "ULR"
+            Begin Extent = 
+               Top = 6
+               Left = 255
+               Bottom = 119
+               Right = 425
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "U"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 217
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetUserLoginRecordsByUserId_View'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'GetUserLoginRecordsByUserId_View'
+GO
+USE [master]
+GO
+ALTER DATABASE [BankSystem_Database] SET  READ_WRITE 
+GO

@@ -1,0 +1,97 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6E1B30B4-26BC-4706-86ED-CEB980A58B65}|BankSystem.API.csproj|c:\\my_projects\\project 20_ banksystem-v0.6 test\\banksystem.api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6E1B30B4-26BC-4706-86ED-CEB980A58B65}|BankSystem.API.csproj|solutionrelative:controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{666ECCA1-FB1F-4DDA-A762-CFA548D6060F}|..\\BankSystem.BLL\\BankSystem.BLL.csproj|c:\\my_projects\\project 20_ banksystem-v0.6 test\\banksystem.bll\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{666ECCA1-FB1F-4DDA-A762-CFA548D6060F}|..\\BankSystem.BLL\\BankSystem.BLL.csproj|c:\\my_projects\\project 20_ banksystem-v0.6 test\\banksystem.bll\\validations\\uservalidation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8C2E6042-79FD-490D-AB79-0112F75C263F}|..\\BankSystem.DAL\\BankSystem.DAL.csproj|c:\\my_projects\\project 20_ banksystem-v0.6 test\\banksystem.dal\\data\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 220,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserData.cs",
+              "DocumentMoniker": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.DAL\\Data\\UserData.cs",
+              "RelativeDocumentMoniker": "..\\BankSystem.DAL\\Data\\UserData.cs",
+              "ToolTip": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.DAL\\Data\\UserData.cs",
+              "RelativeToolTip": "..\\BankSystem.DAL\\Data\\UserData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJMBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T20:50:04.061Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserValidation.cs",
+              "DocumentMoniker": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.BLL\\Validations\\UserValidation.cs",
+              "RelativeDocumentMoniker": "..\\BankSystem.BLL\\Validations\\UserValidation.cs",
+              "ToolTip": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.BLL\\Validations\\UserValidation.cs",
+              "RelativeToolTip": "..\\BankSystem.BLL\\Validations\\UserValidation.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T20:31:27.668Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.BLL\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "..\\BankSystem.BLL\\Services\\UserService.cs",
+              "ToolTip": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.BLL\\Services\\UserService.cs",
+              "RelativeToolTip": "..\\BankSystem.BLL\\Services\\UserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T20:31:23.374Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.API\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UsersController.cs",
+              "ToolTip": "C:\\My_Projects\\Project 20_ BankSystem-v0.6 Test\\BankSystem.API\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "Controllers\\UsersController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAP4BAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T18:25:11.536Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
