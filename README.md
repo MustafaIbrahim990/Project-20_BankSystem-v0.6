@@ -2,8 +2,6 @@
 
 Author: Mustafa A. Ibrahim  
 
----
-
 ## 📌 Overview
 
 This repository contains a modern, scalable, and secure Core Banking Backend System built using ASP.NET Core Web API (.NET 8) and designed according to Clean Architecture principles.
